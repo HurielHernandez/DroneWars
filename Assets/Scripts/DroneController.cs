@@ -14,8 +14,11 @@ public class DroneController : MonoBehaviour {
 	public Camera thirdPerson;
 	public Text modeText;
 	public Text checkpointNumberText ;
+	public Text timerText;
+	public Text completedText;
 
 	int lastCheckPointCrossed = 0;
+	public float timer;
 
 	const float MAX_FORCE = 50;
     float MAX_TILT = 70f;
@@ -110,6 +113,11 @@ public class DroneController : MonoBehaviour {
 		float desiredRoll = -roll * MAX_TILT - ( orientation.z + localangularvelocity.z * 15);
 
 		ApplyForces( desiredPitch / MAX_TILT, desiredRoll / MAX_TILT,   -throttle, yaw );
+
+		if (lastCheckPointCrossed > 0 && lastCheckPointCrossed < 20) {
+			timer += Time.deltaTime;
+			timerText.text =  Mathf.Round(timer) + " sec" ;
+		}
  
 	}
 
@@ -196,13 +204,15 @@ public class DroneController : MonoBehaviour {
 
 	void OnCollisionEnter (Collision collision)
 	{
-		print ("Collision" + collision.relativeVelocity + " " + collision.gameObject.name);
+		//print ("Collision" + collision.relativeVelocity + " " + collision.gameObject.name);
 
 		if (collision.gameObject.name.StartsWith("Bullet"))
 			gameObject.transform.position = Vector3.zero;
 
 		if (collision.gameObject.name.StartsWith ("Wall")) {
-			print ("HIT THE WALL");
+			//print ("HIT THE WALL");
+//			mTransform.position = resetLocation;
+//			mTransform.eulerAngles = new Vector3 (0, 0, 0);
 			//Handheld.Vibrate();
 		}
 
@@ -211,18 +221,24 @@ public class DroneController : MonoBehaviour {
 
 	public void RegisterCheckpointHit (int number)
 	{
-		print("CHECKPOINT" + number + " CROSSED");
-		if(number - 1 == lastCheckPointCrossed)
-		{
+		//print("CHECKPOINT" + number + " CROSSED");
+		if (number - 1 == lastCheckPointCrossed) {
 			lastCheckPointCrossed++;
-			GetComponentInParent<CheckpointManager>().ShowNextCheckpoint(lastCheckPointCrossed);
+			GetComponentInParent<CheckpointManager> ().ShowNextCheckpoint (lastCheckPointCrossed);
 		}
-		checkpointNumberText.text = lastCheckPointCrossed + " of 10";
+	
+		checkpointNumberText.text = lastCheckPointCrossed + " of 20";
+
+		if (number == 20) {
+			completedText.text = "COMPLETED! \n" + Mathf.Round(timer) + " seconds";
+			lastCheckPointCrossed = 1;
+			timer = 0;
+		}
 	}
 
 	public void RegisterCheckpointLocation (Vector3 checkpointLocation)
 	{
-		print("LOCATION" + checkpointLocation);
+		//print("LOCATION" + checkpointLocation);
 
 		resetLocation = checkpointLocation;
 	}
