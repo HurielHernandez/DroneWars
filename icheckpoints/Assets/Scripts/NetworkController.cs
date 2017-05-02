@@ -13,10 +13,26 @@ public class NetworkController : NetworkBehaviour {
 	[SerializeField]ToggleEvent onToggleRemote;
 	[SerializeField]float respawnTime = 5.0f;
 
-	GameObject mainCamera;
+    static List<NetworkController> players = new List<NetworkController>();
 
-	// Use this for initialization
-	void Start () {
+    GameObject mainCamera;
+
+    [ServerCallback]
+    void OnEnable()
+    {
+        if (!players.Contains(this))
+            players.Add(this);
+    }
+
+    [ServerCallback]
+    void OnDisable()
+    {
+        if (players.Contains(this))
+            players.Remove(this);
+    }
+
+    // Use this for initialization
+    void Start () {
 		mainCamera = Camera.main.gameObject;
 		EnableDrone();
 		
@@ -26,6 +42,17 @@ public class NetworkController : NetworkBehaviour {
 	void Update () {
 		
 	}
+
+    [Server]
+    public void disablePlayers() {
+        for (int i = 0; i < players.Count; i++)
+            players[i].RpcdisablePlayer();
+    }
+
+    [ClientRpc]
+    public void RpcdisablePlayer() {
+        DisableDrone();
+    }
 
 	void EnableDrone ()
 	{
