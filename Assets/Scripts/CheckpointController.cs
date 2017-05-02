@@ -19,6 +19,7 @@ public class CheckpointController : MonoBehaviour {
 
 	void OnTriggerEnter (Collider other)
 	{
+
 		//print("CHeckpoint" + other.attachedRigidbody); 
 		other.SendMessageUpwards("RegisterCheckpointHit", number, SendMessageOptions.RequireReceiver);
 		other.SendMessageUpwards("RegisterCheckpointLocation", this.transform.position, SendMessageOptions.RequireReceiver);

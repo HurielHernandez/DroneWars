@@ -231,8 +231,8 @@ public class DroneController : MonoBehaviour {
 
 		if (number == 20) {
 			completedText.text = "COMPLETED! \n" + Mathf.Round(timer) + " seconds";
-			lastCheckPointCrossed = 1;
-			timer = 0;
+			//lastCheckPointCrossed = 1;
+			//timer = 0;
 		}
 	}
 
