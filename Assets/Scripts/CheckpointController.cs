@@ -21,6 +21,7 @@ public class CheckpointController : MonoBehaviour {
 	{
 		//print("CHeckpoint" + other.attachedRigidbody); 
 		other.SendMessageUpwards("RegisterCheckpointHit", number, SendMessageOptions.RequireReceiver);
+		other.SendMessageUpwards("RegisterCheckpointLocation", this.transform.position, SendMessageOptions.RequireReceiver);
 		PlaySound();
 
 	}

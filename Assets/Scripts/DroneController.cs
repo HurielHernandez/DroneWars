@@ -21,6 +21,8 @@ public class DroneController : MonoBehaviour {
     float MAX_TILT = 70f;
     const float STEER_FORCE = 50f;
     const float MAX_SPIN = 50f;
+
+    Vector3 resetLocation = Vector3.zero;
   
 
 	// Use this for initialization
@@ -43,9 +45,10 @@ public class DroneController : MonoBehaviour {
 			toggleCamera ();
 		}
 		if (Input.GetKeyDown (KeyCode.Joystick1Button10)) {
-			mTransform.position = Vector3.zero;
+			mTransform.position = resetLocation;
 			mTransform.eulerAngles = new Vector3 (0, 0, 0);
-			mTransform.Rotate(new Vector3(0, -90, 0 ));
+
+//			mTransform.Rotate(new Vector3(0, -90, 0 ));
 		}
 
 		if (Input.GetKeyUp (KeyCode.Joystick1Button18)) {
@@ -215,6 +218,13 @@ public class DroneController : MonoBehaviour {
 			GetComponentInParent<CheckpointManager>().ShowNextCheckpoint(lastCheckPointCrossed);
 		}
 		checkpointNumberText.text = lastCheckPointCrossed + " of 10";
+	}
+
+	public void RegisterCheckpointLocation (Vector3 checkpointLocation)
+	{
+		print("LOCATION" + checkpointLocation);
+
+		resetLocation = checkpointLocation;
 	}
 
 
